@@ -16,11 +16,17 @@ main_page_head = '''
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <style type="text/css" media="screen">
+        * {
+            box-sizing: border-box;
+        }
         body {
             padding-top: 80px;
         }
+        h2 {
+            font-size: 1.4em;
+        }
         #trailer .modal-dialog {
-            margin-top: 200px;
+            margin-top: 100px;
             width: 640px;
             height: 480px;
         }
@@ -37,6 +43,8 @@ main_page_head = '''
         .movie-tile {
             margin-bottom: 20px;
             padding-top: 20px;
+            float: none;
+            display: inline-block!important;
         }
         .movie-tile:hover {
             background-color: #EEE;
@@ -45,6 +53,7 @@ main_page_head = '''
         .scale-media {
             padding-bottom: 56.25%;
             position: relative;
+            height: 468px;
         }
         .scale-media iframe {
             border: none;
@@ -54,6 +63,12 @@ main_page_head = '''
             left: 0;
             top: 0;
             background-color: white;
+        }
+        .col-lg-4 {
+            width: 33%;
+        }
+        .col-md-6 {
+            width: 46.5%;
         }
     </style>
     <script type="text/javascript" charset="utf-8">
@@ -65,13 +80,13 @@ main_page_head = '''
         });
         // Start playing the video whenever the trailer modal is opened
         $(document).on('click', '.movie-tile', function (event) {
-            var trailerYouTubeId = $(this).attr('data-trailer-youtube-id')
-            var sourceUrl = 'http://www.youtube.com/embed/' + trailerYouTubeId + '?autoplay=1&html5=1';
+            var trailerId = $(this).attr('data-trailer-id')
+            let sourceRoot = 'http://www.imdb.com/videoembed/'
             $("#trailer-video-container").empty().append($("<iframe></iframe>", {
               'id': 'trailer-video',
               'type': 'text-html',
-              'src': sourceUrl,
-              'frameborder': 0
+              'src': sourceRoot + trailerId,
+              'frameborder': 0,
             }));
         });
         // Animate in the movies when the page loads
@@ -120,7 +135,7 @@ main_page_content = '''
 
 # A single movie entry html template
 movie_tile_content = '''
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-id="{trailer_id}" data-toggle="modal" data-target="#trailer">
     <img src="{poster_image_url}" width="220" height="342">
     <h2>{movie_title}</h2>
 </div>
@@ -132,18 +147,18 @@ def create_movie_tiles_content(movies):
     content = ''
     for movie in movies:
         # Extract the youtube ID from the url
-        youtube_id_match = re.search(
-            r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
-        youtube_id_match = youtube_id_match or re.search(
-            r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
-        trailer_youtube_id = (youtube_id_match.group(0) if youtube_id_match
-                              else None)
+        # youtube_id_match = re.search(
+        #     r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
+        # youtube_id_match = youtube_id_match or re.search(
+        #     r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
+        # trailer_youtube_id = (youtube_id_match.group(0) if youtube_id_match
+        #                       else None)
 
         # Append the tile for the movie with its content filled in
         content += movie_tile_content.format(
             movie_title=movie.title,
-            poster_image_url=movie.poster_image_url,
-            trailer_youtube_id=trailer_youtube_id
+            poster_image_url=movie.poster_url,
+            trailer_id=movie.trailer_id
         )
     return content
 
