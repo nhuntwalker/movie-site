@@ -1,10 +1,13 @@
-"""Class descriptions for the media types handled by entertainment_center.py."""
+"""Class descriptions for the media types."""
 
 
 class Video(object):
     """Prototype object for movies and tv shows."""
 
-    def __init__(self, title, synopsis, rating, poster_url, duration, starring):
+    def __init__(
+        self, title, synopsis, rating,
+        poster_url, duration, starring
+    ):
         """Constructor for the Video object."""
         self.title = title
         self.synopsis = synopsis
@@ -15,7 +18,20 @@ class Video(object):
 
 
 class Movie(Video):
-    """This class provides a way to store movie-related information."""
+    """This class provides a way to store movie-related information.
+
+    Parameters:
+    ----------
+    title (str) - Title of the movie
+    synopsis (str) - Short summary of the movie
+    rating (str) - Rating from viewers of the movie
+    poster_url (str) - URL pointing to the poster image of the movie
+    duration (int) - Length of the movie in minutes
+    starring (list[str]) - List of the first two actors in the cast
+    trailer_id (str) - ID for the IMDB trailer video
+    mpaa_rating (str) - MPAA rating for the movie
+    year (str) - The year in which the movie was released
+    """
 
     MPAA_RATINGS = ['G', 'PG', 'PG-13', 'R', '']
 

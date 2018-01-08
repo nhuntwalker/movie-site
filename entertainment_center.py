@@ -20,7 +20,7 @@ def retrieve_movies():
 
 
 def build_movie(movie_url):
-    """Given a url for the movie, scrape the individual page for relevant info."""
+    """Build movie object from movie URL page."""
     response = requests.get(movie_url)
     html = Soup(response.text, 'html.parser')
     title_tag = html.find('h1', {'itemprop': 'name'})
@@ -35,7 +35,10 @@ def build_movie(movie_url):
     ).attrs['content']
     if mpaa_rating.upper() not in Movie.MPAA_RATINGS:
         mpaa_rating = ''
-    poster_url = html.find('div', {'class': 'poster'}).find('img').attrs['src']
+    poster_url = html.find(
+        'div',
+        {'class': 'poster'}
+    ).find('img').attrs['src']
     synopsis = html.find('div', {'class': 'summary_text'}).text.strip()
     cast = html.find('table', {'class': 'cast_list'})
     cast_links = cast.find_all('td', {'itemprop': 'actor'})
